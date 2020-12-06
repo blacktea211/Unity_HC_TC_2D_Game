@@ -11,7 +11,7 @@ public class Car : MonoBehaviour
     int size;3
     float weight;300.7
     string brand; toyota
-    bool skyWindow; true 
+    bool skyWindow; true
    
 
 }
