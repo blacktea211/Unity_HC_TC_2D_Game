@@ -213,6 +213,7 @@ GameObject:
   m_Component:
   - component: {fileID: 472178501}
   - component: {fileID: 472178500}
+  - component: {fileID: 472178502}
   m_Layer: 0
   m_Name: "\u65B9\u584A3"
   m_TagString: Untagged
@@ -283,6 +284,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &472178502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 472178499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29a6db6a5ae57774c953d37310e183ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  falltime: 1.5
+  score: 0
+  hightscore: 0
+  level: 1
+  gmaeover: {fileID: 0}
+  fallsound: {fileID: 0}
+  movesound: {fileID: 0}
+  cleansound: {fileID: 0}
+  endsound: {fileID: 0}
 --- !u!1 &2024853755
 GameObject:
   m_ObjectHideFlags: 0
@@ -376,3 +398,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a42f09caa8a4954da7946a74eb79d26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  size: 3
+  weight: 300.7
+  brand: toyota
+  skyWindow: 1
+  colorA: {r: 1, g: 0, b: 0, a: 1}
+  colorB: {r: 0, g: 0, b: 1, a: 1}
+  colorC: {r: 0, g: 0, b: 1, a: 0.5}
+  v2A: {x: 0, y: 0}
+  v2B: {x: 1, y: 1}
+  v2C: {x: 0, y: 1}
+  v3A: {x: 0, y: 1, z: 1}
+  v4A: {x: 0, y: 1, z: 1, w: 1}
+  soundExplosion: {fileID: 0}
+  spriteA: {fileID: 0}
+  gameObject1: {fileID: 0}
+  tra: {fileID: 0}
+  Render: {fileID: 0}

@@ -13,7 +13,7 @@ public class TetrisManager : MonoBehaviour
 
     public int level = 1;
     [Header("等級")]
-    
+
     public GameObject gmaeover;
     [Header("結束畫面")]
 
@@ -26,7 +26,20 @@ public class TetrisManager : MonoBehaviour
     public AudioClip cleansound;
     [Header("方塊消除音效")]
 
-    public AudioClip endsound;
     [Header("方塊消除音效")]
+    public AudioClip endsound;
+
+    //方法
+    private void newTetris();
+
+    public  int addscore();
+
+    private void gametime();
+
+    private void end();
+
+    public void again();
+
+    public void exit();
 
 }
