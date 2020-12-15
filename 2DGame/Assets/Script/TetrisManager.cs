@@ -30,16 +30,30 @@ public class TetrisManager : MonoBehaviour
     public AudioClip endsound;
 
     //方法
-    private void newTetris();
+    private void newTetris()
+    {
 
-    public  int addscore();
+    }
 
-    private void gametime();
+    public  void addscore()
+    {
 
-    private void end();
+    }
 
-    public void again();
+    private void gametime()
+    {
+    }
 
-    public void exit();
+    private void end()
+    {
+    }
+
+    public void again()
+    {
+    }
+
+    public void exit()
+    {
+    }
 
 }

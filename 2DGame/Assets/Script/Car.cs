@@ -73,7 +73,7 @@ public class Car : MonoBehaviour
         //呼叫方法語法:自訂方法名稱();
         MethodA();
         MethodB();
-        MethodC();
+        MethodC(1);
 
         //區域變數
         //類型 區域變數名稱 指定 值
@@ -125,7 +125,7 @@ public class Car : MonoBehaviour
         return new Vector3(1, 2, 3);
     }
 
-    private void MethodC(int nimber)
+    private void MethodC(int number)
     {
         number += 10;   //累加後的數字+10 ex number=1 ,  Method =>   number += 10  =11
         print("累加後的數字+10");
