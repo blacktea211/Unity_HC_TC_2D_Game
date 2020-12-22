@@ -1,31 +1,31 @@
-﻿using UnityEngine;
+﻿ using UnityEngine;
 
 public class TetrisManager : MonoBehaviour
 {
-    public float falltime = 1.5f;
     [Header("掉落時間"), Range(0.1f, 3)]
+    public float falltime = 1.5f;
 
-    public int score;
     [Header("目前分數")]
+    public int score;
 
-    public int hightscore;
     [Header("最高分數")]
+    public int hightscore;
 
-    public int level = 1;
     [Header("等級")]
+    public int level = 1;
 
-    public GameObject gmaeover;
     [Header("結束畫面")]
+    public GameObject gmaeover;
 
-    public AudioClip fallsound;
     [Header("方塊掉落音效")]
+    public AudioClip fallsound;
 
-    public AudioClip movesound;
     [Header("方塊移動與旋轉音效")]
+    public AudioClip movesound;
 
-    public AudioClip cleansound;
     [Header("方塊消除音效")]
-
+    public AudioClip cleansound;
+    
     [Header("方塊消除音效")]
     public AudioClip endsound;
 
@@ -36,10 +36,24 @@ public class TetrisManager : MonoBehaviour
     public Transform  traCanvas;
 
 
+
     /// <summary>
     /// 下一個俄羅斯方塊編號
     /// </summary>
     public int indexnext;
+
+
+    /// <summary>
+    /// 目前俄羅斯方塊
+    /// </summary>
+    public RectTransform currentTetris;
+
+    /// <summary>
+    /// 計時器
+    /// </summary>
+    public float timer; 
+
+
 
     private void Start()
     {
@@ -47,6 +61,64 @@ public class TetrisManager : MonoBehaviour
 
 
     }
+
+
+    private void Update()
+    {
+        ControlTertis();
+    }
+
+    private void ControlTertis()
+    {
+        if (currentTetris)
+        {
+
+
+            //  +=  累加 , 計時器 = 時間 + 每一幀(每秒的影格)的時間 =>累加時間
+            timer += Time.deltaTime;
+
+            if (timer >= falltime) //判斷式 > bool > 成立 > true 
+                                   //              >不成立 > false 
+            {
+                timer = 0; //計時器歸0
+                currentTetris.anchoredPosition -= new Vector2(0, 50);
+            }
+
+            // 或者||
+            // 按下 D 或 鍵盤右鍵 使方塊往右50
+            if (Input .GetKeyDown (KeyCode.D)|| Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                currentTetris.anchoredPosition += new Vector2(50, 0);
+            }
+
+            // 按下 A 或 鍵盤左鍵 使方塊往左50
+            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                currentTetris.anchoredPosition -= new Vector2(50, 0);
+            }
+
+            // 按下 W 或 鍵盤上鍵 使方塊逆時針旋轉90度
+            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                //屬性慢板上的 Rotation 必須用 eulerAngles 控制 , eulerAngles ( 0度~360度 )
+                currentTetris.eulerAngles += new Vector3(0, 0, 90);
+            }
+
+            // 按下 空白建 或 鍵盤下鍵 就加速
+            if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.DownArrow))
+            {
+                falltime = 0.2f ;
+                            
+            }
+            //否則恢復速度
+            else
+            {
+                falltime = 1.5f;
+            }
+        }
+    }
+
+
 
     //方法
     /// <summary>
@@ -63,6 +135,12 @@ public class TetrisManager : MonoBehaviour
         traNextArea.GetChild(indexnext).gameObject.SetActive(true);
 
     }
+
+
+
+  
+
+
 
     /// <summary>
     /// 開始遊戲
@@ -82,14 +160,21 @@ public class TetrisManager : MonoBehaviour
         //GetComponent<任何元件>()
         //<T>泛型 - 指所有類型
         //目前俄羅斯方塊 . 取得元件<介面變形>() . 座標 .二維向量
-        current.GetComponent<RectTransform>().anchoredPosition = new Vector2(40, 400);
+        current.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 400);
 
         //2.上一次俄羅斯方塊隱藏
         tetris.SetActive(false);
         //3.隨機取得下一個
         SpawnTetris();
+
+        //將生成的俄羅斯方塊 RectTransform 元件儲存,當開始遊戲，Unity自動抓取方塊元件
+        currentTetris=current.GetComponent<RectTransform>();
     }
-   
+
+
+
+
+
     public  void Addscore()
     {
          
