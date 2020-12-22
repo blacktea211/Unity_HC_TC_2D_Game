@@ -84,18 +84,26 @@ public class TetrisManager : MonoBehaviour
                 currentTetris.anchoredPosition -= new Vector2(0, 50);
             }
 
-            // 或者||
-            // 按下 D 或 鍵盤右鍵 使方塊往右50
-            if (Input .GetKeyDown (KeyCode.D)|| Input.GetKeyDown(KeyCode.RightArrow))
+            //如果方塊的 X軸 < 260 ,不超過右邊邊界
+            if (currentTetris.anchoredPosition.x < 220)
             {
-                currentTetris.anchoredPosition += new Vector2(50, 0);
+                // 或者||
+                // 按下 D 或 鍵盤右鍵 使方塊往右50
+                if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+                {
+                    currentTetris.anchoredPosition += new Vector2(50, 0);
+                }
             }
 
-            // 按下 A 或 鍵盤左鍵 使方塊往左50
-            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+            if (currentTetris.anchoredPosition.x > -220)
             {
-                currentTetris.anchoredPosition -= new Vector2(50, 0);
+                // 按下 A 或 鍵盤左鍵 使方塊往左50
+                if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+                {
+                    currentTetris.anchoredPosition -= new Vector2(50, 0);
+                }
             }
+
 
             // 按下 W 或 鍵盤上鍵 使方塊逆時針旋轉90度
             if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
@@ -107,13 +115,17 @@ public class TetrisManager : MonoBehaviour
             // 按下 空白建 或 鍵盤下鍵 就加速
             if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.DownArrow))
             {
-                falltime = 0.2f ;
-                            
+                falltime = 0.2f ;            
             }
             //否則恢復速度
             else
             {
                 falltime = 1.5f;
+            }
+
+            if (currentTetris .anchoredPosition .y == -300)
+            {
+                StartGame();
             }
         }
     }
