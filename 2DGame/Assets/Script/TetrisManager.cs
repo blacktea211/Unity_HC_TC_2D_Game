@@ -25,7 +25,7 @@ public class TetrisManager : MonoBehaviour
 
     [Header("方塊消除音效")]
     public AudioClip cleansound;
-    
+
     [Header("方塊消除音效")]
     public AudioClip endsound;
 
@@ -33,7 +33,25 @@ public class TetrisManager : MonoBehaviour
     public Transform traNextArea;
 
     [Header("畫布")]
-    public Transform  traCanvas;
+    public Transform traCanvas;
+
+
+    [Header("各方塊起始位置")]
+    public Vector2[] posSpawn =
+    {
+     new Vector2(0,360),
+    new Vector2(15,360),
+    new Vector2(-15,360),
+    new Vector2(15,360),
+    new Vector2(-15,360),
+    new Vector2(15,375),
+    new Vector2(15,345),
+    new Vector2(-15,360),
+    new Vector2(-15,360),
+    new Vector2(0,360),
+    new Vector2(0,360),
+    new Vector2(15,345)
+   };
 
 
 
@@ -68,6 +86,8 @@ public class TetrisManager : MonoBehaviour
         ControlTertis();
     }
 
+
+    #region  控制方塊
     private void ControlTertis()
     {
         if (currentTetris)
@@ -84,9 +104,17 @@ public class TetrisManager : MonoBehaviour
                 currentTetris.anchoredPosition -= new Vector2(0, 50);
             }
 
-            //如果方塊的 X軸 < 260 ,不超過右邊邊界
-            if (currentTetris.anchoredPosition.x < 220)
+            //取得俄羅斯方塊Tetris腳本
+            Tetris tetris = currentTetris.GetComponent<Tetris>();
+
+            //如果 " 沒有 " 碰到右邊牆壁，在執行以下動作 (讓方塊往右)
+            if (!tetris.WallRight)
             {
+
+                //如果方塊的 X軸 < 260 ,不超過右邊邊界
+                //if (currentTetris.anchoredPosition.x < 220)
+
+
                 // 或者||
                 // 按下 D 或 鍵盤右鍵 使方塊往右50
                 if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
@@ -95,8 +123,12 @@ public class TetrisManager : MonoBehaviour
                 }
             }
 
-            if (currentTetris.anchoredPosition.x > -220)
+            if (!tetris.WallLeft)
             {
+
+            
+            //if (currentTetris.anchoredPosition.x > -220)
+            
                 // 按下 A 或 鍵盤左鍵 使方塊往左50
                 if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
                 {
@@ -115,7 +147,7 @@ public class TetrisManager : MonoBehaviour
             // 按下 空白建 或 鍵盤下鍵 就加速
             if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.DownArrow))
             {
-                falltime = 0.2f ;            
+                falltime = 0.1f ;            
             }
             //否則恢復速度
             else
@@ -128,7 +160,10 @@ public class TetrisManager : MonoBehaviour
                 StartGame();
             }
         }
+
     }
+    #endregion
+
 
 
 
@@ -171,8 +206,8 @@ public class TetrisManager : MonoBehaviour
 
         //GetComponent<任何元件>()
         //<T>泛型 - 指所有類型
-        //目前俄羅斯方塊 . 取得元件<介面變形>() . 座標 .二維向量
-        current.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 400);
+        //目前俄羅斯方塊 . 取得元件<介面變形>() . 座標 .方塊起始位置
+        current.GetComponent<RectTransform>().anchoredPosition = posSpawn [indexnext];
 
         //2.上一次俄羅斯方塊隱藏
         tetris.SetActive(false);
