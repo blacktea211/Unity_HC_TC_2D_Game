@@ -39,7 +39,7 @@ public class TetrisManager : MonoBehaviour
     [Header("各方塊起始位置")]
     public Vector2[] posSpawn =
     {
-     new Vector2(0,360),
+    new Vector2(0,360),
     new Vector2(15,360),
     new Vector2(-15,360),
     new Vector2(15,360),
@@ -107,7 +107,9 @@ public class TetrisManager : MonoBehaviour
             //取得俄羅斯方塊Tetris腳本
             Tetris tetris = currentTetris.GetComponent<Tetris>();
 
-            //如果 " 沒有 " 碰到右邊牆壁，在執行以下動作 (讓方塊往右)
+
+
+            //如果 " 沒有 " 碰到 右邊牆壁，在執行以下動作 (讓方塊往右)
             if (!tetris.WallRight)
             {
 
@@ -116,25 +118,31 @@ public class TetrisManager : MonoBehaviour
 
 
                 // 或者||
-                // 按下 D 或 鍵盤右鍵 使方塊往右50
+                // 按下 D 或 鍵盤右鍵 使方塊往右30
                 if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
                 {
-                    currentTetris.anchoredPosition += new Vector2(50, 0);
+                    currentTetris.anchoredPosition += new Vector2(30, 0);
                 }
+                           
             }
 
+
+            //如果 " 沒有 " 碰到 左邊牆壁，在執行以下動作 (讓方塊往左)
             if (!tetris.WallLeft)
             {
-
+                            
+                //if (currentTetris.anchoredPosition.x > -220)
             
-            //if (currentTetris.anchoredPosition.x > -220)
-            
-                // 按下 A 或 鍵盤左鍵 使方塊往左50
+                // 按下 A 或 鍵盤左鍵 使方塊往左30
                 if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
                 {
-                    currentTetris.anchoredPosition -= new Vector2(50, 0);
+                    currentTetris.anchoredPosition -= new Vector2(30, 0);
                 }
+
             }
+
+          
+
 
 
             // 按下 W 或 鍵盤上鍵 使方塊逆時針旋轉90度
@@ -155,10 +163,20 @@ public class TetrisManager : MonoBehaviour
                 falltime = 1.5f;
             }
 
-            if (currentTetris .anchoredPosition .y == -300)
+          // if (currentTetris .anchoredPosition .y == -300)
+            //{
+              //  StartGame();
+            //}
+
+
+            //如果方塊碰到地板，StartGame (重新生成方塊)
+            if (tetris.WallDown)
             {
+
                 StartGame();
+
             }
+
         }
 
     }
