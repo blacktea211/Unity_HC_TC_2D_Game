@@ -311,12 +311,12 @@ GameObject:
   - component: {fileID: 1364513460777621729}
   - component: {fileID: -7792325251992803874}
   m_Layer: 5
-  m_Name: "\u68AF\u5F62 \u4E0B"
+  m_Name: "T\u5F62 \u4E0B"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1364513460777621729
 RectTransform:
   m_ObjectHideFlags: 0
@@ -354,6 +354,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   length0: 0.7
   length90: 0.5
+  offsetX: 15
+  offsetY: 15
+  lenghtRotate0R: 1.2
+  lenghtRotate0L: 1.2
+  lenghtRotate90R: 1
+  lenghtRotate90L: 1
+  WallRight: 0
+  WallLeft: 0
+  WallDown: 0
+  canRotate: 1
 --- !u!1 &6275979741355710214
 GameObject:
   m_ObjectHideFlags: 0

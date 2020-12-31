@@ -1,4 +1,5 @@
 ﻿ using UnityEngine;
+using System.Collections;    //引用系統集合API - 協同程序
 
 public class TetrisManager : MonoBehaviour
 {
@@ -32,8 +33,8 @@ public class TetrisManager : MonoBehaviour
     [Header("下一個俄羅斯方塊區域")]
     public Transform traNextArea;
 
-    [Header("畫布")]
-    public Transform traCanvas;
+    [Header("生成俄羅斯方塊的父物件")]
+    public Transform traTetrisParent;
 
 
     [Header("各方塊起始位置")]
@@ -84,6 +85,14 @@ public class TetrisManager : MonoBehaviour
     private void Update()
     {
         ControlTertis();
+        //Alpha1 鍵盤左上數字鍵1
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+
+            // 呼叫協同程序 +StartCoroutine
+            StartCoroutine(ShakeEffect());
+        }
+
     }
 
 
@@ -101,7 +110,7 @@ public class TetrisManager : MonoBehaviour
                                    //              >不成立 > false 
             {
                 timer = 0; //計時器歸0
-                currentTetris.anchoredPosition -= new Vector2(0, 50);
+                currentTetris.anchoredPosition -= new Vector2(0, 30);
             }
 
             //取得俄羅斯方塊Tetris腳本
@@ -150,6 +159,8 @@ public class TetrisManager : MonoBehaviour
             {
                 //屬性慢板上的 Rotation 必須用 eulerAngles 控制 , eulerAngles ( 0度~360度 )
                 currentTetris.eulerAngles += new Vector3(0, 0, 90);
+
+                tetris.Offset();
             }
 
             // 按下 空白建 或 鍵盤下鍵 就加速
@@ -196,6 +207,13 @@ public class TetrisManager : MonoBehaviour
         //Random .Range不會顯示最大值 , Random .Range (0,11) => 隨機顯示0~10的方塊
         indexnext = Random.Range(0, 11);
 
+
+        //測試
+      indexnext = 6 ;
+
+
+
+
         //下一個俄羅斯方塊區域 . 取得子物件(子物件編號) . 轉為遊戲物件 . 啟動設定(顯示)
         traNextArea.GetChild(indexnext).gameObject.SetActive(true);
 
@@ -220,7 +238,7 @@ public class TetrisManager : MonoBehaviour
         GameObject tetris = traNextArea.GetChild(indexnext).gameObject;
 
         //目前俄羅斯方塊=生成物件(物件，父物件)
-        GameObject current = Instantiate(tetris, traCanvas);
+        GameObject current = Instantiate(tetris, traTetrisParent);
 
         //GetComponent<任何元件>()
         //<T>泛型 - 指所有類型
@@ -261,4 +279,23 @@ public class TetrisManager : MonoBehaviour
     {
     }
 
+    // 協同程序 [程式執行時，執行此程式 ( 在此程式中執行第一個指令，等待幾秒後在繼續下一個指令 ) 期間，其他程式持續執行不受影響]
+    //可用於須等待時間(ex：塔防遊戲)
+    // 傳回類型 - 時間
+    // yeli 讓步、等待
+    private IEnumerator ShakeEffect()
+    {
+        float interval = 0.5f;
+
+        // RectTransform 介面變形
+        RectTransform rect = traTetrisParent.GetComponent<RectTransform>();
+        yield return new WaitForSeconds(1f);
+
+
+        //Y軸向上20過0.5秒再向上15再過0.5秒...
+        rect.anchoredPosition += Vector2.up * 20; ;
+        yield return new WaitForSeconds(interval);
+        rect.anchoredPosition += Vector2.up * 15; ;
+        yield return new WaitForSeconds(interval);
+    }
 }
