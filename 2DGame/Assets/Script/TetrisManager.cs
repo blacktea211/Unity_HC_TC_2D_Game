@@ -85,13 +85,17 @@ public class TetrisManager : MonoBehaviour
     private void Update()
     {
         ControlTertis();
-        //Alpha1 鍵盤左上數字鍵1
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
 
+        FastDown();
+
+        //Alpha1 鍵盤左上數字鍵1
+       // if (Input.GetKeyDown(KeyCode.Alpha1))
+        //{
+
+            
             // 呼叫協同程序 +StartCoroutine
-            StartCoroutine(ShakeEffect());
-        }
+         //   StartCoroutine(ShakeEffect());
+      //  }
 
     }
 
@@ -163,29 +167,36 @@ public class TetrisManager : MonoBehaviour
                 tetris.Offset();
             }
 
-            // 按下 空白建 或 鍵盤下鍵 就加速
-            if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.DownArrow))
+
+            if (!fastDown)  //如果沒有 快速落下  才能 加速
             {
-                falltime = 0.1f ;            
+
+
+                // 按下 S 或 鍵盤下鍵 就加速
+                if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+                {
+                    falltime = 0.1f;
+                }
+                //否則恢復速度
+                else
+                {
+                    falltime = 1.5f;
+                }
+
+                // if (currentTetris .anchoredPosition .y == -300)
+                //{
+                //  StartGame();
+                //}
+
             }
-            //否則恢復速度
-            else
+
+            //如果方塊碰到地板  或  小方塊底部碰撞
+            if (tetris.WallDown || tetris.smallBottom)
             {
-                falltime = 1.5f;
-            }
-
-          // if (currentTetris .anchoredPosition .y == -300)
-            //{
-              //  StartGame();
-            //}
-
-
-            //如果方塊碰到地板，StartGame (重新生成方塊)
-            if (tetris.WallDown)
-            {
-
-                StartGame();
-
+                SetGround();                          //方塊遍地板後
+                StartGame();                         //重生一顆方塊
+                StartCoroutine(ShakeEffect());      //啟動偕同程序(協同方法())  ,  晃動效果
+                              
             }
 
         }
@@ -193,8 +204,24 @@ public class TetrisManager : MonoBehaviour
     }
     #endregion
 
+    /// <summary>
+    /// 設定方塊掉落後為方塊
+    /// </summary>
+    private void SetGround()
+    {
+        /**迴圈：for (for + tab*2下)
+        // 迴圈 =>  1.初始值  2.條件判斷  3.敘述 print()  4.迭代器 (運算遞增/遞減)
+        // 初始值 " 只跑第一次 " => 迴圈 ：1234 => 234 => 234 ...
+         */
 
+        int count = currentTetris.childCount;  //取得 目前方塊 的子物件
+        for (int i = 0; i < count; i++)         //迴圈執行子物件數量次數  (抓每顆方塊裡的方塊數量)
+        {
+            currentTetris.GetChild(i).name = "方塊";   //小方塊名稱改為方塊
+            currentTetris.GetChild(i).gameObject.layer =10;   //小方塊圖層改為方塊
+        }
 
+    }
 
     //方法
     /// <summary>
@@ -209,7 +236,7 @@ public class TetrisManager : MonoBehaviour
 
 
         //測試
-      indexnext = 6 ;
+      //indexnext = 6 ;
 
 
 
@@ -233,6 +260,8 @@ public class TetrisManager : MonoBehaviour
     /// </summary>
     public void StartGame()
     {
+        fastDown = false ;    //  碰到地板後，沒有快速落下
+
         //1.生成俄羅斯方塊要放的位置
         //保存上一次的俄羅斯方塊
         GameObject tetris = traNextArea.GetChild(indexnext).gameObject;
@@ -279,23 +308,58 @@ public class TetrisManager : MonoBehaviour
     {
     }
 
+    /// <summary>
+    /// 協同程序
+    /// </summary>
+    /// <returns></returns>
+   
     // 協同程序 [程式執行時，執行此程式 ( 在此程式中執行第一個指令，等待幾秒後在繼續下一個指令 ) 期間，其他程式持續執行不受影響]
-    //可用於須等待時間(ex：塔防遊戲)
+    // 可用於須等待時間(ex：塔防遊戲)
     // 傳回類型 - 時間
     // yeli 讓步、等待
     private IEnumerator ShakeEffect()
     {
-        float interval = 0.5f;
+        float interval = 0.05f;
 
         // RectTransform 介面變形
         RectTransform rect = traTetrisParent.GetComponent<RectTransform>();
-        yield return new WaitForSeconds(1f);
+      //  yield return new WaitForSeconds(1f);
 
 
         //Y軸向上20過0.5秒再向上15再過0.5秒...
         rect.anchoredPosition += Vector2.up * 20; ;
         yield return new WaitForSeconds(interval);
+        rect.anchoredPosition = Vector2.zero;
+        yield return new WaitForSeconds(interval);
         rect.anchoredPosition += Vector2.up * 15; ;
         yield return new WaitForSeconds(interval);
+        rect.anchoredPosition = Vector2.zero;
+        yield return new WaitForSeconds(interval);
+    }
+
+
+    /// <summary>
+    /// 是否快速落下
+    /// </summary>
+    private bool fastDown;
+   
+    /// <summary>
+    /// 快速掉落功能
+    /// </summary>
+    private void FastDown()
+    {
+        if (currentTetris && !fastDown)             //如果有 目前的方塊 且 沒有快速落下
+        {
+
+            
+            if (Input.GetKeyDown(KeyCode.Space))    //如果 按下 空白鍵 
+            {
+                fastDown = true;                    //快速掉落
+                falltime = 0.02f;                   //掉落時間 
+              
+            } 
+           
+
+        }
     }
 }

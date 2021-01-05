@@ -2,6 +2,7 @@
 
 public class Tetris : MonoBehaviour
 {
+    #region 欄位
     [Header("角度為 0 , 線條的長度")]
     public float length0;
     [Header("角度為 90 , 線條的長度")]
@@ -26,10 +27,13 @@ public class Tetris : MonoBehaviour
     private float lenghtRotateL;
 
 
+
+
+
     /// <summary>
     /// 判斷是否碰到牆壁 => 碰到牆壁時打勾
     /// </summary>
-    
+
     //右
     public bool WallRight;
     //左
@@ -37,11 +41,19 @@ public class Tetris : MonoBehaviour
     //下
     public bool WallDown;
 
+    #endregion
+    [Header("每一顆方塊的射線長度"), Range(0f, 2f)]
+    public float smalllenght = 0.5f;
+
+    #region 事件
+
     /// <summary>
     /// 是否能 旋轉
     /// </summary>
     public bool canRotate = true;
     private RectTransform rect;
+
+
 
     /// <summary>
     /// 繪製圖示
@@ -54,20 +66,21 @@ public class Tetris : MonoBehaviour
         //將浮點數轉為整數 => 去小數點 => 轉換的元件前+(int)
         int z = (int)transform.eulerAngles.z;
 
+        #region 判定 射線 碰到牆壁與地板
 
-         if (z == 0 || z == 180)
+        if (z == 0 || z == 180)
         {   //儲存目前長度
-            length = length0 ;
+            length = length0;
             //右邊射線
             Gizmos.color = Color.red;
-            Gizmos.DrawRay(transform.position, Vector3.right * length0 );
+            Gizmos.DrawRay(transform.position, Vector3.right * length0);
             //左邊射線
             Gizmos.color = Color.blue;
-            Gizmos.DrawRay(transform.position, -Vector3.right * length0 );
+            Gizmos.DrawRay(transform.position, -Vector3.right * length0);
             //向下射線
             lenghtDown = length90;
             Gizmos.color = Color.green;
-            Gizmos.DrawRay(transform.position, -Vector3.up * length90 );
+            Gizmos.DrawRay(transform.position, -Vector3.up * length90);
             //繪製旋轉射線
             lenghtRotateR = lenghtRotate0R;
             lenghtRotateL = lenghtRotate0L;
@@ -76,9 +89,9 @@ public class Tetris : MonoBehaviour
             Gizmos.DrawRay(transform.position, -Vector3.right * lenghtRotate0L);
         }
 
-        else if(z == 90 || z== 270)
+        else if (z == 90 || z == 270)
         {
-            length = length90 ;
+            length = length90;
             //右邊射線
             Gizmos.color = Color.red;
             Gizmos.DrawRay(transform.position, Vector3.right * length90);
@@ -96,8 +109,37 @@ public class Tetris : MonoBehaviour
             Gizmos.DrawRay(transform.position, Vector3.right * lenghtRotate90R);
             Gizmos.DrawRay(transform.position, -Vector3.right * lenghtRotate90L);
         }
+        #endregion
 
+        #region 每一顆小方塊判定
+
+        //下
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Gizmos.color = Color.white;
+            Gizmos.DrawRay(transform.GetChild(i).position, Vector2.down * smalllenght);
+        }
+
+        //右
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Gizmos.color = Color.gray;
+            Gizmos.DrawRay(transform.GetChild(i).position, Vector2.right * smalllenght);
+        }
+
+        //左
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawRay(transform.GetChild(i).position, Vector2.left * smalllenght);
+        }
     }
+    #endregion
+
+
+
+
+
 
 
     private void Start()
@@ -110,22 +152,63 @@ public class Tetris : MonoBehaviour
     }
 
 
+
+
     void Update()
     {
         Checkwall();
+        CheckBottom();
     }
 
+    /// <summary>
+    /// 小方塊 底部  左 右 碰撞
+    /// </summary>
+    public bool smallBottom;
+
+    public bool smallRight;
+
+    public bool smallLeft;
+
+    /// <summary>
+    /// 檢查 底部 及 左 右 是否有其他方塊
+    /// </summary>
+    private void CheckBottom()
+    {
+        // 迴圈執行每一顆小方塊
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            // 每一顆小方塊的 射線 (每一顆小方塊的 中心點 , 向下 , 長度 , 圖層)
+            RaycastHit2D hit = Physics2D.Raycast(transform.GetChild(i).position, Vector3.down, smalllenght, 1 << 10);
+
+            if (hit && hit.collider.name == "方塊") smallBottom = true;
+
+
+            RaycastHit2D hitsmallRight = Physics2D.Raycast(transform.GetChild(i).position, Vector3.right, smalllenght, 1 << 10);
+
+            if (hit && hit.collider.name == "方塊") smallRight = true;
+            else smallRight = false;
+
+            RaycastHit2D hitsmallLeft = Physics2D.Raycast(transform.GetChild(i).position, Vector3.left, smalllenght, 1 << 10);
+
+            if (hit && hit.collider.name == "方塊") smallLeft = true;
+            else smallRight = false;
+        }
+    }
+    #endregion
+
+
+    #region 方法
     /// <summary>
     /// 檢查射線是否碰到牆壁
     /// </summary>
     private void Checkwall()
-    {   
+    {
         //2D物理碰撞資訊 區域變數名稱 = 2D物理射線碰撞(位置,方向,長度,圖層)
 
         //Physics2D.Raycast起始點, 方向, 長度 , 判斷是否撞到圖層8)
         //RaycastHit2D  將方塊撞到牆壁的資料傳回 hit 
-        RaycastHit2D hitR = Physics2D.Raycast(transform.position, Vector3.right, length , 1 << 8);
-       // print(hitR.transform.name);
+        RaycastHit2D hitR = Physics2D.Raycast(transform.position, Vector3.right, length, 1 << 8);
+        // print(hitR.transform.name);
 
         //並且 &&
         //如果碰到 並且 名稱為  右邊牆壁
@@ -133,7 +216,7 @@ public class Tetris : MonoBehaviour
         {
             WallRight = true;
         }
-        else 
+        else
         {
             WallRight = false;
         }
@@ -141,7 +224,7 @@ public class Tetris : MonoBehaviour
         //Physics2D.Raycast起始點, 方向, 長度 , 判斷是否撞到圖層8)
         //如果碰到 並且 名稱為  左邊牆壁
         RaycastHit2D hitLeft = Physics2D.Raycast(transform.position, -Vector3.right, length, 1 << 8);
-      //  print(hitLeft.transform.name);
+        //  print(hitLeft.transform.name);
 
         if (hitLeft && hitLeft.transform.name == "左邊牆壁")
         {
@@ -169,7 +252,7 @@ public class Tetris : MonoBehaviour
         //Physics2D.Raycast起始點, 方向, 長度 , 判斷是否撞到圖層9)
         //如果碰到 並且 名稱為  地板
         RaycastHit2D hitDown = Physics2D.Raycast(transform.position, -Vector3.up, lenghtDown, 1 << 9);
-       // print(hitDown.transform.name);
+        // print(hitDown.transform.name);
 
         if (hitDown && hitDown.transform.name == "地板")
         {
@@ -179,8 +262,10 @@ public class Tetris : MonoBehaviour
         {
             WallDown = false;
         }
-              
+
     }
+   
+
 
 
     public void Offset()
@@ -192,7 +277,7 @@ public class Tetris : MonoBehaviour
 
         if (z == 0 || z == 180)
         {
-           
+
             rect.anchoredPosition += new Vector2(offsetX, offsetY);
         }
 
@@ -201,10 +286,9 @@ public class Tetris : MonoBehaviour
 
         else if (z == 90 || z == 270)
         {
-          
+
             rect.anchoredPosition -= new Vector2(offsetX, offsetY);
         }
     }
-
-
 }
+#endregion
