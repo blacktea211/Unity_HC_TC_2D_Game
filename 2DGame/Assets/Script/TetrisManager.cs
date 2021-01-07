@@ -1,5 +1,7 @@
-﻿ using UnityEngine;
-using System.Collections;    //引用系統集合API - 協同程序
+﻿using UnityEngine;
+using UnityEngine.UI;         //引用系統引擎 - 介面
+using System.Collections;     //引用系統集合API - 協同程序
+using System.Linq;            // 引用 系統.查詢語言 API - 偵測陣列、清單內的資料
 
 public class TetrisManager : MonoBehaviour
 {
@@ -77,8 +79,6 @@ public class TetrisManager : MonoBehaviour
     private void Start()
     {
         SpawnTetris();
-
-
     }
 
 
@@ -122,8 +122,8 @@ public class TetrisManager : MonoBehaviour
 
 
 
-            //如果 " 沒有 " 碰到 右邊牆壁，在執行以下動作 (讓方塊往右)
-            if (!tetris.WallRight)
+            //如果 " 沒有 " 碰到 右邊牆壁 及 右邊小方塊，在執行以下動作 (讓方塊往右)
+            if (!tetris.WallRight && !tetris.smallRight)
             {
 
                 //如果方塊的 X軸 < 260 ,不超過右邊邊界
@@ -140,8 +140,8 @@ public class TetrisManager : MonoBehaviour
             }
 
 
-            //如果 " 沒有 " 碰到 左邊牆壁，在執行以下動作 (讓方塊往左)
-            if (!tetris.WallLeft)
+            //如果 " 沒有 " 碰到 左邊牆壁 及 左邊小方塊，在執行以下動作 (讓方塊往左)
+            if (!tetris.WallLeft && !tetris.smallLeft)
             {
                             
                 //if (currentTetris.anchoredPosition.x > -220)
@@ -193,8 +193,11 @@ public class TetrisManager : MonoBehaviour
             //如果方塊碰到地板  或  小方塊底部碰撞
             if (tetris.WallDown || tetris.smallBottom)
             {
-                SetGround();                          //方塊遍地板後
-                StartGame();                         //重生一顆方塊
+                //注意順序
+
+                SetGround();                        //方塊遍地板後
+                CheckTetris();                      //檢查方塊是否連成一線
+                StartGame();                        //重生一顆方塊
                 StartCoroutine(ShakeEffect());      //啟動偕同程序(協同方法())  ,  晃動效果
                               
             }
@@ -220,7 +223,51 @@ public class TetrisManager : MonoBehaviour
             currentTetris.GetChild(i).name = "方塊";   //小方塊名稱改為方塊
             currentTetris.GetChild(i).gameObject.layer =10;   //小方塊圖層改為方塊
         }
+        for (int i = 0; i < count; i++)
+        {
+            currentTetris.GetChild(0).SetParent(traScoreArea);
+        }
+        Destroy(currentTetris.gameObject);
+    }
 
+    [Header("分數判定區域")]
+    public Transform traScoreArea;
+
+    public RectTransform[] restsmall;
+
+    /// <summary>
+    /// 檢查方塊是否連成一線
+    /// </summary>
+    private void CheckTetris()
+    {
+        restsmall = new RectTransform[traScoreArea.childCount];
+
+        // 檢查陣列內 等於 true 的資料
+        // 陣列.哪裡 ( 代名詞 => 條件 )
+        // var 無類型
+
+        // 檢查有幾顆小方塊的位置 在 y 軸 -300
+        var small = restsmall.Where(x => x.anchoredPosition.y== -300);
+
+        //如果一排有17顆小方塊 (放滿一排)
+        if (small.ToArray().Length == 17)
+        {
+          
+        }
+    }
+
+    // 方塊連線時閃爍特效
+    private IEnumerable Shine(RectTransform[] smalls)
+    {
+        float interval = 0.05f;
+        for (int i = 0; i < 17; i++) smalls[i].GetComponent<Image>().enabled = false;
+        yield return new WaitForSeconds(interval);
+        for (int i = 0; i < 17; i++) smalls[i].GetComponent<Image>().enabled = true;
+        yield return new WaitForSeconds(interval);
+        for (int i = 0; i < 17; i++) smalls[i].GetComponent<Image>().enabled = false;
+        yield return new WaitForSeconds(interval);
+        for (int i = 0; i < 17; i++) smalls[i].GetComponent<Image>().enabled = true;
+        yield return new WaitForSeconds(interval);       
     }
 
     //方法
@@ -317,6 +364,8 @@ public class TetrisManager : MonoBehaviour
     // 可用於須等待時間(ex：塔防遊戲)
     // 傳回類型 - 時間
     // yeli 讓步、等待
+
+    //畫面震動
     private IEnumerator ShakeEffect()
     {
         float interval = 0.05f;
