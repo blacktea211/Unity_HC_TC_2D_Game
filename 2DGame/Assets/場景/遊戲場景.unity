@@ -24078,6 +24078,10 @@ MonoBehaviour:
   timer: 0
   traScoreArea: {fileID: 1648577911}
   restsmall: []
+  destroyRow: 0000000000000000000000000000000000000000000000
+  downHight: []
+  textScore: {fileID: 2036986615}
+  TextLv: {fileID: 1498575136}
 --- !u!4 &1168745304
 Transform:
   m_ObjectHideFlags: 0
