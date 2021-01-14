@@ -507,7 +507,7 @@ public class TetrisManager : MonoBehaviour
         level = 1 + score / 1000;                              // 等級公式  lv 1 =>  score = 1 + 100 / 1000
         TextLv.text = "等級：" + level;                        // 更新介面
 
-        falltimeMax = 1.5f - level / 2;                        //速度提升公式
+        falltimeMax = 1.5f - level / 10;                        //速度提升公式
         falltimeMax = Mathf.Clamp(falltimeMax, 0.1f, 99f);     // Clamp ( 夾住 ) ， 將數值限制在此範圍內
         falltime = falltimeMax;
     }
